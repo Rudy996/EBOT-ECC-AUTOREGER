@@ -42,11 +42,21 @@ def rabota(url):
             driver.find_element_by_xpath("//input[@name='password_confirmation']").send_keys(password)
             driver.find_element_by_xpath("//select[@name='country']").send_keys("A")
             driver.find_element_by_class_name("btn-block").click()
-            time.sleep(30)
-            h = requests.get(f"https://www.1secmail.com/api/v1/?action=getMessages&login={mails[0]}&domain={mails[1]}")  # проверка письма
-            y = h.json()[0]["id"]
-            o = requests.get(f'https://www.1secmail.com/api/v1/?action=readMessage&login={mails[0]}&domain={mails[1]}&id={y}')
-            t = o.json()["body"]
+            time.sleep(3)
+            driver.find_element_by_xpath("//button[@type='submit']").click()
+            w = 0
+            p = 0
+            while w == 0:
+                try:
+                    time.sleep(1)
+                    h = requests.get(f"https://www.1secmail.com/api/v1/?action=getMessages&login={mails[0]}&domain={mails[1]}")  # проверка письма
+                    y = h.json()[0]["id"]
+                    o = requests.get(f'https://www.1secmail.com/api/v1/?action=readMessage&login={mails[0]}&domain={mails[1]}&id={y}')
+                    t = o.json()["body"]
+                    w = 1
+                except:
+                    p = p + 1
+
             myString_list = [r.group("url") for r in (re.search("(?P<url>https?://[^\s]+)", i) for i in t.split(" ")) if
                              r is not None]
             confirm1 = myString_list[2]
